@@ -26,7 +26,6 @@ pista * geraPista(pista *p);
 pista * removeCombustivel(pista *p);
 pista * Remove_Aviao_Pista(pista *alvo);
 pista *procuraVoid(pista *alvo);
-pista *remove_comeco(pista *alvo);
 void procura_berg(pista *alvo, int remocao[], int endereco[], int &auxiliarRemocao);
 aviao *remove_aviao(aviao *alvo, int id);
 pista * remove_fila(int f, pista *p);

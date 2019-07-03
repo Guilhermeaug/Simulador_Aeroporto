@@ -17,8 +17,14 @@ int main(){
 	estatistica.EtempoDecol=0;
 	
 	
+	FILE *graficoDecol=fopen("graficoMediaDecol.xls","w");
+	FILE *graficoAterri=fopen("graficoMediaAterri.xls","w");
+	FILE *graficoSemReserva=fopen("graficoSemReserva.xls","w");
+	FILE *graficoCairam=fopen("graficoCairam.xls","w");
+	
+	
 	bool tipo;
-	int tempo = 10, escolha, sorteioPouso, sorteioDecolagem;
+	int tempo = 0, escolha, sorteioPouso, sorteioDecolagem;
 	float mediaPouso=-1,mediaDecol=-1;
 	
 	pista *pista1 = geraPista(pista1);
@@ -27,7 +33,7 @@ int main(){
 	
 			
 	srand(time(NULL));
-	while(tempo != 0){
+	while(tempo != 100000){
 		
 		int remocaoP1[4], enderecoP1[4], qtd1 = 1, auxiliarRemocao1 = 1;
 		int remocaoP2[4], enderecoP2[4], qtd2 = 1, auxiliarRemocao2 = 1;
@@ -43,7 +49,7 @@ int main(){
 		
 		sorteioPouso = geracaoAviao();
 		tipo = false;
-		printf("%02d Avioes para pouso.\n",sorteioPouso);
+	//	printf("%02d Avioes para pouso.\n",sorteioPouso);
 		for(int x = 0; x < sorteioPouso; x++){
 			escolha=Escolhe_pista(pista1,pista2);
 			if(escolha==1)
@@ -54,14 +60,14 @@ int main(){
 	
 		sorteioDecolagem = geracaoAviao();
 		tipo = true;
-		printf("%02d Avioes para decolagem.\n",sorteioDecolagem);
+	//	printf("%02d Avioes para decolagem.\n",sorteioDecolagem);
 		for(int x = 0; x < sorteioDecolagem; x++)
 			pista3 = Insere_Aviao(pista3,tipo);
 		
 		
-		imprimeFila(pista1,1);
-		imprimeFila(pista2,2);
-		imprimeFila(pista3,3);
+	//	imprimeFila(pista1,1);
+	//	imprimeFila(pista2,2);
+	//	imprimeFila(pista3,3);
 	
 		//Funcoes para remover avioes com 0 de combustivel	
 		pista1 = procuraVoid(pista1);
@@ -72,7 +78,7 @@ int main(){
 		procura_berg(pista2, remocaoP2, enderecoP2, auxiliarRemocao2);
 		
 		if(remocaoP1[0] == 1){
-			while(limite < 3 && qtd1 <= auxiliarRemocao1){		
+			while(limite < 3 && qtd1 < auxiliarRemocao1){		
 				switch(enderecoP1[qtd1]){
 					case 1: pista1->f1 = remove_aviao(pista1->f1, remocaoP1[qtd1]);
 					pista1->qtd1--;
@@ -103,7 +109,7 @@ int main(){
 					
 		if(limite < 3){
 			if(remocaoP2[0] == 1){
-				while(limite < 3 && qtd2 <= auxiliarRemocao2){
+				while(limite < 3 && qtd2 < auxiliarRemocao2){
 					
 					if(limite == 0)
 						pista3->situacao = true;
@@ -144,6 +150,10 @@ int main(){
 			if(escolhido != 0)
 				pista2 = remove_fila(escolhido, pista2);
 			
+			//Media Decolagem(b)
+			if(pista3->f3!=NULL)
+				estatistica.EtempoDecol=estatistica.EtempoDecol+pista3->f3->decol;
+				
 			pista3 = remove_fila(3, pista3);
 						
 		}else if(limite == 1){
@@ -183,31 +193,48 @@ int main(){
 			
 		removeCombustivel(pista1);
 		removeCombustivel(pista2);
-		tempoDecol(pista3);
-	
-		tempo--;
-		
-		
+	    pista3=tempoDecol(pista3); 
+	 		
 		if(estatistica.MedPouso!=0){
 			mediaPouso=estatistica.EDeltaFuel/estatistica.MedPouso;
 		}
 		if(estatistica.MedDecol!=0){
      		mediaDecol= estatistica.EtempoDecol/estatistica.MedDecol;
     	}
+			
 		
+		if(mediaDecol!=-1){                                         //
+			fprintf(graficoDecol,"%d;%f\n",tempo,mediaDecol);          //     
+		}															      //		 
+		if(mediaPouso!=-1){													//Escrevendo nos arquivos que vão ser ,posteriormente, os gráficos.
+			fprintf(graficoAterri,"%d;%f\n",tempo,mediaPouso);              //
+		}																   //			
+		fprintf(graficoSemReserva,"%d;%d\n",tempo,estatistica.avSemFuel);//
+		fprintf(graficoCairam,"%d;%d\n",tempo,estatistica.caiu);     	//
+	/*	
 		printf("TEMPO MEDIO DE ESPERA PARA DECOLAGEM: %.2f\n",mediaDecol);
 		printf("TEMPO MEDIO DE ESPERA PARA ATERRISAGEM: %.2f\n",mediaPouso);
 		printf("NUMERO DE AVIOES QUE ATERRISSAM SEM RESERVA DE GASOSA: %d\n",estatistica.avSemFuel);
-		printf("CAIRAM COITADOS: %d\n",estatistica.caiu);	
-	
-		system("pause");
-		system("cls");
+		printf("CAIRAM COITADOS: %d\n",estatistica.caiu);
+		
+		printf("%d\t%d\t%d\n",pista1->qtd1,pista1->qtd2,pista1->qtd3);
+		printf("%d\t%d\t%d\n",pista2->qtd1,pista2->qtd2,pista2->qtd3);
+		printf("%d\t%d\t%d\n",pista3->qtd1,pista3->qtd2,pista3->qtd3);
+	*/	
+	//	system("pause");
+	//	system("cls");
+			 
+		tempo++;
 	}
-	/*
-	printf("%d\t%d\t%d\n",pista1->qtd1,pista1->qtd2,pista1->qtd3);
-	printf("%d\t%d\t%d\n",pista2->qtd1,pista2->qtd2,pista2->qtd3);
-	printf("%d\t%d\t%d\n",pista3->qtd1,pista3->qtd2,pista3->qtd3);
-	*/
-
+	
+	printf("TEMPO MEDIO DE ESPERA PARA DECOLAGEM: %.2f\n",mediaDecol);
+	printf("TEMPO MEDIO DE ESPERA PARA ATERRISAGEM: %.2f\n",mediaPouso);
+	printf("NUMERO DE AVIOES QUE ATERRISSAM SEM RESERVA DE GASOSA: %d\n",estatistica.avSemFuel);
+	printf("CAIRAM COITADOS: %d\n",estatistica.caiu);
+	
+	fclose(graficoDecol);
+	fclose(graficoAterri);
+	fclose(graficoSemReserva);
+	fclose(graficoCairam);
+	return 0;
 }
-

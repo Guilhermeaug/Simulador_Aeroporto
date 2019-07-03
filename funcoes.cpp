@@ -69,9 +69,7 @@ aviao *gerar_Aviao(bool tipo){
 		novo->fuelinicial=novo->fuel;
 		//Media Aterrisagem(c)
 		estatistica.MedPouso++;
-	}
-	novo->decol=0;
-			
+	}		
 	return novo;
 }
 
@@ -79,8 +77,7 @@ pista *Insere_Aviao(pista *alvo, bool tipo){
 	aviao *novo = gerar_Aviao(tipo);
 	aviao *aux = NULL, *ant = NULL;
 	int indicadorFila; //se i = 1 (f1) se i = 2 (f2) se i = 3 (f3)
-	
-	
+  
 	if(!tipo){
 		if(alvo->qtd1 <= alvo->qtd2){
 			aux = alvo->f1;
@@ -124,8 +121,7 @@ aviao *remove_aviao(aviao *alvo, int id){
 	
 	if(alvo == NULL)
 		return alvo;
-	
-	
+  
 	while(aux != NULL && aux->ID != id){
 		ant = aux;
 		aux = aux->prox;
@@ -139,7 +135,6 @@ aviao *remove_aviao(aviao *alvo, int id){
 		
 		free(aux);
 	}
-	
 	return alvo;
 }
 
@@ -229,7 +224,7 @@ int geracaoFuel(){
 }
 
 int geracaoAviao(){
-	int newAviao = rand() % 3;
+	int newAviao = rand() % 4;
 	return newAviao;
 }
 
@@ -263,7 +258,7 @@ void imprimeFila(pista *alvo,int num){
 	printf("\n");
 	printf("\tFILA 3:\n");
 	while(aux3 != NULL){
-		printf("\t\t|ID: %d  FUEL: %d|\n",aux3->ID,aux3->fuel);
+		printf("\t\t|ID: %d  FUEL: %d  DECOL: %2.f|\n",aux3->ID,aux3->fuel,aux3->decol);
 		aux3 = aux3->prox;
 	}
 	printf("\n");
@@ -275,7 +270,7 @@ pista * remove_fila(int f, pista *p){
 		
 		if(ant == NULL)
 			return p;
-		
+      
 		aviao *aux = ant->prox;
 		//Media Aterrissagem(c)
 		estatistica.EDeltaFuel=(p->f1->fuelinicial - p->f1->fuel)+estatistica.EDeltaFuel;
@@ -284,7 +279,7 @@ pista * remove_fila(int f, pista *p){
 		
 		p->qtd1--;
 		p->situacao = true;
-		
+
 	} if(f ==2){
 		aviao *ant = p->f2;
 		
@@ -300,7 +295,7 @@ pista * remove_fila(int f, pista *p){
 		p->qtd2--;
 		p->situacao = true;
 		
-	}if(f ==3){
+	}if(f ==3){		
 		aviao *aux = p->f3;
 		if(aux == NULL)
 			return p;
@@ -311,7 +306,6 @@ pista * remove_fila(int f, pista *p){
 		p->qtd3--;
 		p->situacao = true;
 	}
-	
 	return p;
 }
 
@@ -319,8 +313,7 @@ int verifica_fila(pista *p){
 
 	aviao *p1 = p->f1;
 	aviao *p2 = p->f2;
-	
-	
+
 	int cont1=0, cont2=0, cont3=0;
 	
 	if(p1 == NULL)
